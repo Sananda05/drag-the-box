@@ -16,6 +16,8 @@ const DraggableBox = ({ wrapperRef, selectedOption }) => {
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [boxPosition, setBoxPosition] = useState({ x: 0, y: 0 });
 
+  const [isResizing, setIsResizing] = useState(false);
+
   let offsetX, offsetY;
 
   const handleDragStart = (e) => {
@@ -48,6 +50,27 @@ const DraggableBox = ({ wrapperRef, selectedOption }) => {
 
       setBoxPosition({ x: x, y: y });
     }
+  };
+
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    setIsResizing(true);
+
+    const handleMouseMove = (e) => {
+      wrapperRef.current.style.width =
+        e.clientX - wrapperRef.current.getBoundingClientRect().left + "px";
+      wrapperRef.current.style.height =
+        e.clientY - wrapperRef.current.getBoundingClientRect().top + "px";
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
   };
 
   const handleDragEnd = () => {
@@ -143,6 +166,19 @@ const DraggableBox = ({ wrapperRef, selectedOption }) => {
         }}
         onMouseDown={handleDragWrapper}
       />
+      <div
+        className="resize-handle"
+        style={{
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+          cursor: "se-resize",
+          backgroundColor: "pink",
+          height: "20px",
+          width: "20px",
+        }}
+        onMouseDown={handleMouseDown}
+      ></div>
       <div
         ref={boxRef}
         style={{
