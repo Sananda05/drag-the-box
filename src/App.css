@@ -15,5 +15,6 @@
   box-shadow: 0 .5px 6px rgb(195, 193, 193);
   padding: 3rem;
   box-sizing: border-box;
+  position: relative;
 
 }
