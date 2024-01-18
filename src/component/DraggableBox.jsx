@@ -129,32 +129,6 @@ const DraggableBox = ({ wrapperRef, selectedOption }) => {
     display: isVisible ? "block" : "none",
   };
 
-  // const tooltipStyle = {
-  //   top:
-  //     selectedOption === "top"
-  //       ? `${
-  //           boxPosition.y >= 0 && boxPosition.y <= 40
-  //             ? tooltipPosition.y +
-  //               (boxRef?.current?.getBoundingClientRect()?.top || 0) +
-  //               80
-  //             : tooltipPosition.y +
-  //               (boxRef?.current?.getBoundingClientRect()?.top || 0) -
-  //               50
-  //         }px`
-  //       : `${
-  //           tooltipPosition.y +
-  //           (boxRef?.current?.getBoundingClientRect()?.bottom || 0) -
-  //           80
-  //         }`,
-  //   left: `${
-  //     tooltipPosition.x +
-  //     (boxRef?.current?.getBoundingClientRect()?.left + 5 || 0)
-  //   }px`,
-  //   display: isVisible ? "block" : "none",
-  // };
-
-  // console.log(selectedOption);
-
   return (
     <div style={{ position: "", top: 0, left: 0 }}>
       <img
@@ -184,8 +158,9 @@ const DraggableBox = ({ wrapperRef, selectedOption }) => {
           cursor: "pointer",
           color: "white",
           fontWeight: "bold",
-          top: "0",
-          left: "0",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
         }}
         onMouseDown={handleDragStart}
         onMouseEnter={handleBoxHover}
