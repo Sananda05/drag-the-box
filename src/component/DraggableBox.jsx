@@ -3,7 +3,9 @@ import Tooltip from "./Tooltip";
 
 import "./component.css";
 
-const DraggableBox = ({ wrapperRef }) => {
+import dragIcon from "../assets/all-directions.png";
+
+const DraggableBox = ({ wrapperRef, selectedOption }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const boxRef = useRef(null);
@@ -62,31 +64,117 @@ const DraggableBox = ({ wrapperRef }) => {
     setIsHovered(false);
   };
 
+  const handleDragWrapper = (e) => {
+    e.preventDefault();
+
+    if (wrapperRef.current) {
+      const wrapperRect = wrapperRef.current.getBoundingClientRect();
+      const offsetX = e.clientX - wrapperRect.left;
+      const offsetY = e.clientY - wrapperRect.top;
+
+      const handleMouseMove = (e) => {
+        const x = e.clientX - offsetX;
+        const y = e.clientY - offsetY;
+
+        wrapperRef.current.style.left = `${x}px`;
+        wrapperRef.current.style.top = `${y}px`;
+      };
+
+      const handleMouseUp = () => {
+        document.removeEventListener("mousemove", handleMouseMove);
+        document.removeEventListener("mouseup", handleMouseUp);
+      };
+
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
+    }
+  };
+  console.log(boxRef?.current?.getBoundingClientRect());
+
+  const calculateTopPosition = () => {
+    const boxTop = boxRef?.current?.getBoundingClientRect()?.top || 0;
+    const boxBottom = boxRef?.current?.getBoundingClientRect()?.bottom || 0;
+
+    if (selectedOption === "top") {
+      return boxPosition.y >= 0 && boxPosition.y <= 40
+        ? tooltipPosition.y + boxTop + 80
+        : tooltipPosition.y + boxTop - 50;
+    } else if (selectedOption === "bottom") {
+      return boxPosition.y >= 330
+        ? tooltipPosition.y + boxBottom - 100
+        : tooltipPosition.y + boxBottom + 20;
+    }
+    return tooltipPosition.y + boxTop + 15;
+  };
+
+  const calculateLeftPosition = () => {
+    const boxRight = boxRef?.current?.getBoundingClientRect()?.right || 0;
+    const boxLeft = boxRef?.current?.getBoundingClientRect()?.left || 0;
+
+    if (selectedOption === "right") {
+      return boxPosition.x >= 0 && boxPosition.x <= 470
+        ? tooltipPosition.x + boxRight + 20
+        : tooltipPosition.x + boxRight - 250;
+    } else if (selectedOption === "left") {
+      return boxPosition.x <= 50
+        ? tooltipPosition.x + boxRight + 20
+        : tooltipPosition.x + boxRight - 250;
+    }
+    return tooltipPosition.x + boxLeft + 5;
+  };
+
   const tooltipStyle = {
-    top: `${
-      boxPosition.y >= 0 && boxPosition.y <= 60
-        ? tooltipPosition.y +
-          (boxRef?.current?.getBoundingClientRect()?.top || 0) +
-          100
-        : tooltipPosition.y +
-          (boxRef?.current?.getBoundingClientRect()?.top || 0) -
-          100
-    }px`,
-    left: `${
-      tooltipPosition.x +
-      (boxRef?.current?.getBoundingClientRect()?.left + 10 || 0)
-    }px`,
+    top: `${calculateTopPosition()}px`,
+    left: `${calculateLeftPosition()}px`,
     display: isVisible ? "block" : "none",
   };
 
+  // const tooltipStyle = {
+  //   top:
+  //     selectedOption === "top"
+  //       ? `${
+  //           boxPosition.y >= 0 && boxPosition.y <= 40
+  //             ? tooltipPosition.y +
+  //               (boxRef?.current?.getBoundingClientRect()?.top || 0) +
+  //               80
+  //             : tooltipPosition.y +
+  //               (boxRef?.current?.getBoundingClientRect()?.top || 0) -
+  //               50
+  //         }px`
+  //       : `${
+  //           tooltipPosition.y +
+  //           (boxRef?.current?.getBoundingClientRect()?.bottom || 0) -
+  //           80
+  //         }`,
+  //   left: `${
+  //     tooltipPosition.x +
+  //     (boxRef?.current?.getBoundingClientRect()?.left + 5 || 0)
+  //   }px`,
+  //   display: isVisible ? "block" : "none",
+  // };
+
+  // console.log(selectedOption);
+
   return (
     <div style={{ position: "", top: 0, left: 0 }}>
+      <img
+        src={dragIcon}
+        alt="drag"
+        style={{
+          height: "20px",
+          width: "20px",
+          position: "absolute",
+          right: "5px",
+          top: "5px",
+        }}
+        onMouseDown={handleDragWrapper}
+      />
       <div
         ref={boxRef}
         style={{
           position: "absolute",
-          height: "100px",
-          width: "200px",
+          height: "60px",
+          width: "130px",
           backgroundColor: "rgb(132, 206, 229)",
           border: "none",
           borderRadius: "5px",

@@ -1,6 +1,6 @@
 .hoveredComponent {
     position: fixed;
-    height: 100px;
+    height: 30px;
     width: 100px;
     background-color: white;
     border: 1px solid #ccc;
