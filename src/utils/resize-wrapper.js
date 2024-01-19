@@ -9,8 +9,6 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
       wrapperRef.current.style.width =
         e.clientX - wrapperRef?.current?.getBoundingClientRect().left + "px";
 
-      console.log(wrapperRect, "and", innerBoxRect);
-
       if (wrapperRect.right <= innerBoxRect.right) {
         const innerBoxLeft = wrapperRect.width - innerBoxRect.width;
 
@@ -27,13 +25,21 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
       }
     } else if (direction === "left") {
       const newWidth = wrapperRect.right - e.clientX;
-      if (newWidth >= innerBoxRect.right - wrapperRect.left) {
+
+      if (newWidth >= innerBoxRect.width) {
         wrapperRef.current.style.width = newWidth + "px";
         wrapperRef.current.style.left = `${e.clientX}px`;
+
+        // Ensure inner box stays inside the outer wrapper
+        const innerBoxLeft = Math.min(
+          wrapperRect.width - innerBoxRect.width,
+          wrapperRect.width - newWidth
+        );
+        boxRef.current.style.left = innerBoxLeft + "px";
       }
     } else if (direction === "up") {
       const newHeight = wrapperRect.bottom - e.clientY;
-      if (newHeight >= innerBoxRect.bottom - wrapperRect.top) {
+      if (newHeight >= innerBoxRect.bottom - wrapperRect.bottom) {
         wrapperRef.current.style.height = newHeight + "px";
         wrapperRef.current.style.top = `${e.clientY}px`;
       }
@@ -42,6 +48,17 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
         e.clientX - wrapperRef.current.getBoundingClientRect().left + "px";
       wrapperRef.current.style.height =
         e.clientY - wrapperRef.current.getBoundingClientRect().top + "px";
+
+      if (wrapperRect.right <= innerBoxRect.right) {
+        const innerBoxLeft = wrapperRect.width - innerBoxRect.width;
+
+        boxRef.current.style.left = innerBoxLeft + "px";
+      }
+      if (wrapperRect.bottom <= innerBoxRect.bottom) {
+        const innerBoxTop = wrapperRect.height - innerBoxRect.height;
+
+        boxRef.current.style.top = innerBoxTop + "px";
+      }
     }
   };
 
