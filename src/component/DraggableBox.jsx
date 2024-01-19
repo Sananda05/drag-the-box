@@ -5,6 +5,8 @@ import "./component.css";
 
 import dragIcon from "../assets/all-directions.png";
 
+import { handleResizeWrapper } from "../utils/resize-wrapper";
+
 const DraggableBox = ({ wrapperRef, selectedOption }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -15,8 +17,6 @@ const DraggableBox = ({ wrapperRef, selectedOption }) => {
 
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [boxPosition, setBoxPosition] = useState({ x: 0, y: 0 });
-
-  const [isResizing, setIsResizing] = useState(false);
 
   let offsetX, offsetY;
 
@@ -54,7 +54,6 @@ const DraggableBox = ({ wrapperRef, selectedOption }) => {
 
   const handleMouseDown = (e) => {
     e.preventDefault();
-    setIsResizing(true);
 
     const handleMouseMove = (e) => {
       wrapperRef.current.style.width =
@@ -64,7 +63,6 @@ const DraggableBox = ({ wrapperRef, selectedOption }) => {
     };
 
     const handleMouseUp = () => {
-      setIsResizing(false);
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
@@ -112,7 +110,6 @@ const DraggableBox = ({ wrapperRef, selectedOption }) => {
       document.addEventListener("mouseup", handleMouseUp);
     }
   };
-  console.log(boxRef?.current?.getBoundingClientRect());
 
   const calculateTopPosition = () => {
     const boxTop = boxRef?.current?.getBoundingClientRect()?.top || 0;
@@ -167,6 +164,30 @@ const DraggableBox = ({ wrapperRef, selectedOption }) => {
         onMouseDown={handleDragWrapper}
       />
       <div
+        className="resize-handle right"
+        style={{
+          position: "absolute",
+          right: 0,
+          top: 0,
+          bottom: 0,
+          width: "5px",
+          cursor: "e-resize",
+        }}
+        onMouseDown={(e) => handleResizeWrapper(e, "right", wrapperRef)}
+      ></div>
+      <div
+        className="resize-handle bottom"
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          height: "5px",
+          cursor: "s-resize",
+        }}
+        onMouseDown={(e) => handleResizeWrapper(e, "bottom", wrapperRef)}
+      ></div>
+      <div
         className="resize-handle"
         style={{
           position: "absolute",
@@ -194,9 +215,6 @@ const DraggableBox = ({ wrapperRef, selectedOption }) => {
           cursor: "pointer",
           color: "white",
           fontWeight: "bold",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
         }}
         onMouseDown={handleDragStart}
         onMouseEnter={handleBoxHover}
