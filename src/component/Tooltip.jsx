@@ -6,7 +6,7 @@ const Tooltip = ({ wrapperRef, tooltipStyle }) => {
     <div style={tooltipStyle} className="hoveredComponent">
       Tooltip
     </div>,
-    wrapperRef.current
+    document.body
   );
 };
 

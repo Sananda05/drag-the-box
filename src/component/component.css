@@ -7,4 +7,29 @@
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
+
+.inner_box {
+  position: absolute;
+  height: 60px;
+  width: 130px;
+  background-color: rgb(132, 206, 229);
+  border: none;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-weight: bold;
+}  
+
+.resize-handle{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  cursor: se-resize;
+  height: 20px;
+  width: 20px;
+}
   

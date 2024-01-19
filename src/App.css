@@ -29,5 +29,7 @@
   position: absolute;
   top: 20%;
   left: 25%;
+  min-width: 130px;
+  min-height: 60px;
 
 }
