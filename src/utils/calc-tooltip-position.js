@@ -29,7 +29,7 @@ export const calculateLeftPosition = (
   const boxLeft = boxRef?.current?.getBoundingClientRect()?.left || 0;
 
   if (selectedOption === "right") {
-    return boxPosition.x >= 0 && boxPosition.x <= 470
+    return boxPosition.x >= 0 && boxPosition.x <= 450
       ? tooltipPosition.x + boxRight + 20
       : tooltipPosition.x + boxRight - 250;
   } else if (selectedOption === "left") {

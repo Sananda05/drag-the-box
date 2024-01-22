@@ -30,18 +30,27 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
         wrapperRef.current.style.width = newWidth + "px";
         wrapperRef.current.style.left = `${e.clientX}px`;
 
-        // Ensure inner box stays inside the outer wrapper
-        const innerBoxLeft = Math.min(
-          wrapperRect.width - innerBoxRect.width,
-          wrapperRect.width - newWidth
-        );
+        // console.log(innerBoxRect, "and", wrapperRect);
+      }
+      if (wrapperRect.left === innerBoxRect.left) {
+        const innerBoxLeft = wrapperRect.width - newWidth;
         boxRef.current.style.left = innerBoxLeft + "px";
+
+        // if (innerBoxRect.right >= wrapperRect.right) {
+        //   return;
+        // }
       }
     } else if (direction === "up") {
       const newHeight = wrapperRect.bottom - e.clientY;
-      if (newHeight >= innerBoxRect.bottom - wrapperRect.bottom) {
+
+      if (wrapperRect.bottom >= innerBoxRect.bottom) {
         wrapperRef.current.style.height = newHeight + "px";
         wrapperRef.current.style.top = `${e.clientY}px`;
+
+        if (wrapperRect.top === innerBoxRect.top) {
+          const innerBoxTop = wrapperRect.height - newHeight;
+          boxRef.current.style.top = innerBoxTop + "px";
+        }
       }
     } else {
       wrapperRef.current.style.width =
