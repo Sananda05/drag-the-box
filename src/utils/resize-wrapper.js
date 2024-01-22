@@ -26,24 +26,33 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
     } else if (direction === "left") {
       const newWidth = wrapperRect.right - e.clientX;
 
+      if (
+        innerBoxRect.left - e.clientX >=
+        wrapperRect.width - innerBoxRect.width
+      ) {
+        boxRef.current.style.left =
+          wrapperRect.width - innerBoxRect.width + "px";
+      }
       if (newWidth >= innerBoxRect.width) {
         wrapperRef.current.style.width = newWidth + "px";
         wrapperRef.current.style.left = `${e.clientX}px`;
-
-        // console.log(innerBoxRect, "and", wrapperRect);
       }
       if (wrapperRect.left === innerBoxRect.left) {
         const innerBoxLeft = wrapperRect.width - newWidth;
         boxRef.current.style.left = innerBoxLeft + "px";
-
-        // if (innerBoxRect.right >= wrapperRect.right) {
-        //   return;
-        // }
       }
     } else if (direction === "up") {
       const newHeight = wrapperRect.bottom - e.clientY;
 
-      if (wrapperRect.bottom >= innerBoxRect.bottom) {
+      if (
+        innerBoxRect.top - e.clientY >=
+        wrapperRect.height - innerBoxRect.height
+      ) {
+        boxRef.current.style.top =
+          wrapperRect.height - innerBoxRect.height + "px";
+      }
+
+      if (newHeight >= innerBoxRect.height) {
         wrapperRef.current.style.height = newHeight + "px";
         wrapperRef.current.style.top = `${e.clientY}px`;
 
