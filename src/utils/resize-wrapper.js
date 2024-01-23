@@ -51,7 +51,6 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
         boxRef.current.style.top =
           wrapperRect.height - innerBoxRect.height + "px";
       }
-
       if (newHeight >= innerBoxRect.height) {
         wrapperRef.current.style.height = newHeight + "px";
         wrapperRef.current.style.top = `${e.clientY}px`;
@@ -61,7 +60,7 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
           boxRef.current.style.top = innerBoxTop + "px";
         }
       }
-    } else {
+    } else if (direction === "right-bottom") {
       wrapperRef.current.style.width =
         e.clientX - wrapperRef.current.getBoundingClientRect().left + "px";
       wrapperRef.current.style.height =
@@ -76,6 +75,27 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
         const innerBoxTop = wrapperRect.height - innerBoxRect.height;
 
         boxRef.current.style.top = innerBoxTop + "px";
+      }
+    } else {
+      const newWidth = wrapperRect.right - e.clientX;
+      const newHeight = wrapperRect.bottom - e.clientY;
+
+      if (
+        innerBoxRect.left - e.clientX >=
+          wrapperRect.width - innerBoxRect.width ||
+        innerBoxRect.top - e.clientY >= wrapperRect.height - innerBoxRect.height
+      ) {
+        boxRef.current.style.left =
+          wrapperRect.width - innerBoxRect.width + "px";
+        boxRef.current.style.top =
+          wrapperRect.height - innerBoxRect.height + "px";
+      }
+
+      if (newHeight >= innerBoxRect.height && newWidth >= innerBoxRect.width) {
+        wrapperRef.current.style.width = newWidth + "px";
+        wrapperRef.current.style.left = `${e.clientX}px`;
+        wrapperRef.current.style.height = newHeight + "px";
+        wrapperRef.current.style.top = `${e.clientY}px`;
       }
     }
   };

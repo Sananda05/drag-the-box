@@ -110,11 +110,27 @@ const DraggableBox = ({ wrapperRef, selectedOption }) => {
         }}
         onMouseDown={(e) => handleResizeWrapper(e, "up", wrapperRef, boxRef)}
       ></div>
+      <div
+        className="resize-handler"
+        style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          height: "20px",
+          width: "20px",
+          cursor: "nw-resize",
+        }}
+        onMouseDown={(e) =>
+          handleResizeWrapper(e, "left-top", wrapperRef, boxRef)
+        }
+      ></div>
       <img
         src={expandIcon}
         alt="expand"
         className="resize-handle"
-        onMouseDown={(e) => handleResizeWrapper(e, "", wrapperRef, boxRef)}
+        onMouseDown={(e) =>
+          handleResizeWrapper(e, "right-bottom", wrapperRef, boxRef)
+        }
       />
       <div
         ref={boxRef}
