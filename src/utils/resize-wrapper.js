@@ -96,8 +96,10 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
         wrapperRef.current.style.height = newHeight + "px";
         wrapperRef.current.style.top = `${e.clientY}px`;
 
-        boxRef.current.style.left = maxW - e.clientX + "px";
-        boxRef.current.style.top = maxH - e.clientY + "px";
+        if (maxH - e.clientY >= 0 && maxW - e.clientX >= 0) {
+          boxRef.current.style.top = maxH - e.clientY + "px";
+          boxRef.current.style.left = maxW - e.clientX + "px";
+        }
       }
       if (wrapperRect.top > innerBoxRect.top) {
         const innerBoxTop = wrapperRect.height - newHeight;
