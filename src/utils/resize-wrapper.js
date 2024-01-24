@@ -1,9 +1,13 @@
 export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
   e.preventDefault();
+  let maxW = Number(boxRef.current.style.left.split("px")[0]);
+  let maxH = Number(boxRef.current.style.top.split("px")[0]);
 
   const handleMouseMove = (e) => {
     const wrapperRect = wrapperRef?.current?.getBoundingClientRect();
     const innerBoxRect = boxRef?.current?.getBoundingClientRect();
+    maxW = Math.max(maxW, innerBoxRect.left);
+    maxH = Math.max(maxH, innerBoxRect.top);
 
     if (direction === "right") {
       wrapperRef.current.style.width =
@@ -24,39 +28,39 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
         boxRef.current.style.top = innerBoxTop + "px";
       }
     } else if (direction === "left") {
-      const newWidth = wrapperRect.right - e.clientX;
-
-      if (
-        innerBoxRect.left - e.clientX >=
-        wrapperRect.width - innerBoxRect.width
-      ) {
-        boxRef.current.style.left =
-          wrapperRect.width - innerBoxRect.width + "px";
-      }
-      if (newWidth >= innerBoxRect.width) {
+      const newWidth = Math.max(
+        innerBoxRect.width,
+        wrapperRect.right - e.clientX
+      );
+      if (newWidth > innerBoxRect.width) {
         wrapperRef.current.style.width = newWidth + "px";
         wrapperRef.current.style.left = `${e.clientX}px`;
-      }
-      if (wrapperRect.left === innerBoxRect.left) {
-        const innerBoxLeft = wrapperRect.width - newWidth;
-        boxRef.current.style.left = innerBoxLeft + "px";
+        if (maxW - e.clientX >= 0) {
+          boxRef.current.style.left = maxW - e.clientX + "px";
+        }
+
+        if (wrapperRect.left > innerBoxRect.left) {
+          const innerBoxLeft = Math.max(0, wrapperRect.width - newWidth);
+          console.log(innerBoxLeft, wrapperRect.width - newWidth);
+          boxRef.current.style.left = innerBoxLeft + "px";
+        }
       }
     } else if (direction === "up") {
-      const newHeight = wrapperRect.bottom - e.clientY;
+      const newHeight = Math.max(
+        innerBoxRect.height,
+        wrapperRect.bottom - e.clientY
+      );
 
-      if (
-        innerBoxRect.top - e.clientY >=
-        wrapperRect.height - innerBoxRect.height
-      ) {
-        boxRef.current.style.top =
-          wrapperRect.height - innerBoxRect.height + "px";
-      }
-      if (newHeight >= innerBoxRect.height) {
+      if (newHeight > innerBoxRect.height) {
         wrapperRef.current.style.height = newHeight + "px";
         wrapperRef.current.style.top = `${e.clientY}px`;
 
-        if (wrapperRect.top === innerBoxRect.top) {
-          const innerBoxTop = wrapperRect.height - newHeight;
+        if (maxH - e.clientY >= 0) {
+          boxRef.current.style.top = maxH - e.clientY + "px";
+        }
+
+        if (wrapperRect.top > innerBoxRect.top) {
+          const innerBoxTop = Math.max(0, wrapperRect.height - newHeight);
           boxRef.current.style.top = innerBoxTop + "px";
         }
       }
@@ -77,28 +81,59 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
         boxRef.current.style.top = innerBoxTop + "px";
       }
     } else {
-      const newWidth = wrapperRect.right - e.clientX;
-      const newHeight = wrapperRect.bottom - e.clientY;
+      const newWidth = Math.max(
+        innerBoxRect.width,
+        wrapperRect.right - e.clientX
+      );
+      const newHeight = Math.max(
+        innerBoxRect.height,
+        wrapperRect.bottom - e.clientY
+      );
 
-      if (
-        innerBoxRect.left - e.clientX >=
-          wrapperRect.width - innerBoxRect.width ||
-        innerBoxRect.top - e.clientY >= wrapperRect.height - innerBoxRect.height
-      ) {
-        boxRef.current.style.left =
-          wrapperRect.width - innerBoxRect.width + "px";
-        boxRef.current.style.top =
-          wrapperRect.height - innerBoxRect.height + "px";
-      }
-
-      if (newHeight >= innerBoxRect.height && newWidth >= innerBoxRect.width) {
+      if (newHeight > innerBoxRect.height && newWidth > innerBoxRect.width) {
         wrapperRef.current.style.width = newWidth + "px";
         wrapperRef.current.style.left = `${e.clientX}px`;
         wrapperRef.current.style.height = newHeight + "px";
         wrapperRef.current.style.top = `${e.clientY}px`;
+
+        boxRef.current.style.left = maxW - e.clientX + "px";
+        boxRef.current.style.top = maxH - e.clientY + "px";
+      }
+      if (wrapperRect.top > innerBoxRect.top) {
+        const innerBoxTop = wrapperRect.height - newHeight;
+        boxRef.current.style.top = innerBoxTop + "px";
+      }
+      if (wrapperRect.left > innerBoxRect.left) {
+        const innerBoxLeft = wrapperRect.width - newWidth;
+        boxRef.current.style.left = innerBoxLeft + "px";
       }
     }
   };
+
+  //   const changeInnerBoxPosition = (wrapperRect, newWidth) => {
+  //     const innerBoxLeft = Math.max(
+  //       0,
+  //       (wrapperRect.width || 0) - (newWidth || 0)
+  //     );
+  //     console.log(innerBoxLeft, wrapperRect.width, newWidth);
+  //     boxRef.current.style.left = innerBoxLeft + "px";
+  //   };
+
+  //   function throttle(func, delay) {
+  //     let lastCallTime = 0;
+
+  //     return function (...args) {
+  //       const now = Date.now();
+
+  //       if (now - lastCallTime >= delay) {
+  //         func.apply(this, args);
+  //         lastCallTime = now;
+  //       }
+  //     };
+  //   }
+
+  //   const throttledFunction = throttle(changeInnerBoxPosition, 300);
+  //   document.addEventListener("mousemove", throttledFunction);
 
   const handleMouseUp = () => {
     document.removeEventListener("mousemove", handleMouseMove);
