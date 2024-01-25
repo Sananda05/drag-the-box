@@ -1,13 +1,9 @@
 export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
   e.preventDefault();
-  let maxW = Number(boxRef.current.style.left.split("px")[0]);
-  let maxH = Number(boxRef.current.style.top.split("px")[0]);
 
   const handleMouseMove = (e) => {
     const wrapperRect = wrapperRef?.current?.getBoundingClientRect();
     const innerBoxRect = boxRef?.current?.getBoundingClientRect();
-    maxW = Math.max(maxW, innerBoxRect.left);
-    maxH = Math.max(maxH, innerBoxRect.top);
 
     if (direction === "right") {
       wrapperRef.current.style.width =
@@ -35,14 +31,15 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
       if (newWidth > innerBoxRect.width) {
         wrapperRef.current.style.width = newWidth + "px";
         wrapperRef.current.style.left = `${e.clientX}px`;
-        if (maxW - e.clientX >= 0) {
-          boxRef.current.style.left = maxW - e.clientX + "px";
-        }
+        if (innerBoxRect.left - e.clientX >= 0) {
+          boxRef.current.style.left = innerBoxRect.left - e.clientX + "px";
 
-        if (wrapperRect.left > innerBoxRect.left) {
-          const innerBoxLeft = Math.max(0, wrapperRect.width - newWidth);
-          console.log(innerBoxLeft, wrapperRect.width - newWidth);
-          boxRef.current.style.left = innerBoxLeft + "px";
+          if (wrapperRect.left >= innerBoxRect.left) {
+            const innerBoxright = newWidth - innerBoxRect.width;
+            boxRef.current.style.right = innerBoxright + "px";
+          }
+        } else {
+          boxRef.current.style.left = "0px";
         }
       }
     } else if (direction === "up") {
@@ -55,13 +52,20 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
         wrapperRef.current.style.height = newHeight + "px";
         wrapperRef.current.style.top = `${e.clientY}px`;
 
-        if (maxH - e.clientY >= 0) {
-          boxRef.current.style.top = maxH - e.clientY + "px";
-        }
+        console.log(innerBoxRect, "and", wrapperRect);
 
-        if (wrapperRect.top > innerBoxRect.top) {
-          const innerBoxTop = Math.max(0, wrapperRect.height - newHeight);
-          boxRef.current.style.top = innerBoxTop + "px";
+        if (
+          innerBoxRect.top - e.clientY >= 0 &&
+          innerBoxRect.bottom < wrapperRect.bottom
+        ) {
+          boxRef.current.style.top = innerBoxRect.top - e.clientY + "px";
+
+          if (wrapperRect.top > innerBoxRect.top) {
+            const innerBoxTop = wrapperRect.height - newHeight;
+            boxRef.current.style.top = innerBoxTop + "px";
+          }
+        } else {
+          boxRef.current.style.top = "0px";
         }
       }
     } else if (direction === "right-bottom") {
@@ -96,18 +100,33 @@ export const handleResizeWrapper = (e, direction, wrapperRef, boxRef) => {
         wrapperRef.current.style.height = newHeight + "px";
         wrapperRef.current.style.top = `${e.clientY}px`;
 
-        if (maxH - e.clientY >= 0 && maxW - e.clientX >= 0) {
-          boxRef.current.style.top = maxH - e.clientY + "px";
-          boxRef.current.style.left = maxW - e.clientX + "px";
+        if (
+          innerBoxRect.left - e.clientX >= 0 &&
+          innerBoxRect.right < wrapperRect.right
+        ) {
+          boxRef.current.style.left = innerBoxRect.left - e.clientX + "px";
+
+          if (wrapperRect.left >= innerBoxRect.left) {
+            const innerBoxright = newWidth - innerBoxRect.width;
+            boxRef.current.style.right = innerBoxright + "px";
+          }
+        } else {
+          boxRef.current.style.left = "0px";
         }
-      }
-      if (wrapperRect.top > innerBoxRect.top) {
-        const innerBoxTop = wrapperRect.height - newHeight;
-        boxRef.current.style.top = innerBoxTop + "px";
-      }
-      if (wrapperRect.left > innerBoxRect.left) {
-        const innerBoxLeft = wrapperRect.width - newWidth;
-        boxRef.current.style.left = innerBoxLeft + "px";
+
+        if (
+          innerBoxRect.top - e.clientY >= 0 &&
+          innerBoxRect.bottom < wrapperRect.bottom
+        ) {
+          boxRef.current.style.top = innerBoxRect.top - e.clientY + "px";
+
+          if (wrapperRect.top >= innerBoxRect.top) {
+            const innerBoxTop = wrapperRect.height - newHeight;
+            boxRef.current.style.top = innerBoxTop + "px";
+          }
+        } else {
+          boxRef.current.style.top = "0px";
+        }
       }
     }
   };
